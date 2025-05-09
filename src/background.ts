@@ -44,24 +44,39 @@ const sustainabilityTips: SustainabilityTip[] = [
     id: 'tab-tip',
     title: 'Consider closing some tabs',
     message: 'You have more than 15 tabs open. Closing tabs reduces memory usage and server load.',
-    learnMoreLink: 'https://www.energy.gov/energysaver/articles/energy-efficient-computer-use',
+    learnMoreLink: 'https://greenspector.com/en/what-is-the-environmental-impact-of-opening-or-not-opening-links-in-another-tab/',
     condition: (metrics: UserMetrics) => metrics.currentOpenTabs > 15
-  },
-  {
-    id: 'background-apps',
-    title: 'Consider pausing background apps',
-    message: 'Closing or pausing apps running in the background is an easy way to reduce your energy usage.',
-    learnMoreLink: 'https://www.energy.gov/energysaver/articles/energy-efficient-computer-use',
-    condition: (metrics: UserMetrics) => metrics.idleTime > 30 // Show if idle for more than 30 minutes
   },
   {
     id: 'screen-brightness',
     title: 'Sustainability Tip',
     message: 'Reducing screen brightness by 20% can save up to 20% of your monitor energy consumption.',
-    learnMoreLink: 'https://www.energy.gov/energysaver/articles/energy-efficient-computer-use',
+    learnMoreLink: 'https://sustainability.google/progress/energy/efficiency-tips/',
+    condition: (metrics: UserMetrics) => true // Always valid
+  },
+  {
+    id: 'outlook-email',
+    title: 'Clean up your Outlook inbox',
+    message: 'Large email archives consume server energy. Use Outlook\'s Cleanup tool to reduce redundant messages and free up storage.',
+    learnMoreLink: 'https://support.microsoft.com/en-us/office/use-the-conversation-clean-up-tool-to-delete-redundant-messages-70373cdd-acc4-4600-bc10-35c21cdb0503',
     condition: (metrics: UserMetrics) => true // Always valid
   }
 ];
+
+// Function to update the extension badge with number of tips
+function updateBadge(count: number) {
+  if (!isChromeExtension) return;
+  
+  if (count > 0) {
+    // Set badge background color (green)
+    chrome.action.setBadgeBackgroundColor({ color: '#4B985A' });
+    // Set badge text to the count
+    chrome.action.setBadgeText({ text: count.toString() });
+  } else {
+    // Clear the badge when no tips
+    chrome.action.setBadgeText({ text: '' });
+  }
+}
 
 // Initialize Chrome extension event listeners
 function initializeExtension() {
@@ -78,6 +93,9 @@ function initializeExtension() {
     chrome.storage.local.set({ allTips: sustainabilityTips });
     
     console.log('BetterBrowse extension installed');
+    
+    // Initialize with some tips
+    checkAndStoreTips(defaultMetrics);
   });
 
   // Track tab activity
@@ -157,6 +175,9 @@ function checkAndStoreTips(metrics: UserMetrics) {
     const tipsToShow = sustainabilityTips.filter(tip => 
       tip.condition(metrics) && !dismissedTips.includes(tip.id)
     );
+    
+    // Update the badge with the number of tips
+    updateBadge(tipsToShow.length);
     
     if (tipsToShow.length > 0) {
       // Store tips to show in the popup
