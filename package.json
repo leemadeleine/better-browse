@@ -7,6 +7,10 @@
     "watch": "esbuild src/popup/index.tsx --bundle --outdir=dist --watch"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.0",
+    "@mui/styles": "^6.4.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -18,4 +22,4 @@
     "sharp": "^0.32.6",
     "typescript": "^5.2.2"
   }
-} 
+}

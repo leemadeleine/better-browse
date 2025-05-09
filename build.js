@@ -20,7 +20,11 @@ esbuild.build({
   jsx: 'transform',
   jsxFactory: 'React.createElement',
   jsxFragment: 'React.Fragment',
-  loader: { '.tsx': 'tsx', '.ts': 'ts' },
+  loader: { 
+    '.tsx': 'tsx', 
+    '.ts': 'ts',
+    '.css': 'css'  // Add explicit CSS loader
+  },
 }).catch(() => process.exit(1));
 
 // Build the background script
@@ -44,6 +48,15 @@ fs.copyFileSync('src/manifest.json', 'dist/manifest.json');
 
 // Copy the icon
 fs.copyFileSync('icon.png', 'dist/icon.png');
+
+// Extract CSS from popup.css and save it separately
+esbuild.build({
+  entryPoints: ['src/popup/popup.css'],
+  bundle: true,
+  minify: true,
+  sourcemap: true,
+  outfile: 'dist/index.css',
+}).catch(() => process.exit(1));
 
 // Create icon sizes for Chrome
 const sharp = require('sharp');

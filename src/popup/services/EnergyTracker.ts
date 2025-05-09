@@ -253,37 +253,32 @@ class EnergyTracker {
             this.loadSavedHistory(metrics.dailySavings);
           }
           
-          const dates: string[] = [];
-          const today = new Date();
+          // Fixed array of weekdays starting with Monday
+          const dates = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
           
-          // Generate last 7 days dates
-          for (let i = 6; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(today.getDate() - i);
-            dates.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
-          }
+          // Generate mock data when we don't have enough real data
+          const mockSavings = this.savedHistory.length === 7 ? 
+            this.savedHistory : 
+            Array.from({ length: 7 }, () => Math.random() * 10);
           
           resolve({
             dates,
-            savings: this.savedHistory
+            savings: mockSavings
           });
         });
       });
     } else {
-      // Generate mock weekly summary data
-      const dates: string[] = [];
-      const today = new Date();
+      // Fixed array of weekdays starting with Monday
+      const dates = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
       
-      // Generate last 7 days dates
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
-        dates.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
-      }
+      // Generate mock savings data if we don't have any
+      const mockSavings = this.savedHistory.length === 7 ? 
+        this.savedHistory : 
+        Array.from({ length: 7 }, () => Math.random() * 10);
       
       return {
         dates,
-        savings: this.savedHistory
+        savings: mockSavings
       };
     }
   }
