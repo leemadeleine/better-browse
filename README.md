@@ -40,7 +40,3 @@ This version uses mocked data to simulate tracking of:
 - CO₂ equivalent emissions
 
 In a real-world implementation, these values would be calculated based on actual browser usage patterns and up-to-date energy consumption models for digital services.
-
-## License
-
-MIT 
