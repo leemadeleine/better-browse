@@ -14,6 +14,7 @@ import {
   ThemeProvider,
   createTheme
 } from '@mui/material';
+import TipsContainer from './TipsContainer';
 
 // Create a theme
 const theme = createTheme({
@@ -408,6 +409,34 @@ const ProgressItem: React.FC<{
   );
 };
 
+// Error boundary component
+class TipErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error('TipsContainer error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Render fallback UI or nothing when there's an error
+      return null;
+    }
+
+    return this.props.children;
+  }
+}
+
 // Main Dashboard component
 const Dashboard: React.FC = () => {
   const classes = useStyles();
@@ -530,6 +559,11 @@ const Dashboard: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box className={classes.dashboard}>
+        {/* Sustainability Tips Container with Error Boundary */}
+        <TipErrorBoundary>
+          <TipsContainer />
+        </TipErrorBoundary>
+        
         <Box mb={3}>
           <Typography variant="h5" color="primary" gutterBottom>
             Welcome to your Dashboard
